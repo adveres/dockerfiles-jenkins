@@ -7,7 +7,7 @@ FROM centos:latest
 
 # Install a basic SSH server GIT, UNZIP, LSOF, JDK8-devel
 RUN yum -y update \
-    && yum -y install openssh-server git svn unzip zip lsof java-1.8.0-openjdk-devel.x86_64 \
+    && yum -y install openssh-server git svn unzip zip lsof which java-1.8.0-openjdk-devel.x86_64 \
     && yum -y clean all
 
 # update sshd settings, create jenkins user, set jenkins user pw, generate ssh keys
@@ -22,7 +22,7 @@ RUN mkdir /home/jenkins/.m2 \
     && chown jenkins:jenkins /home/jenkins/.m2
 
 # Set JAVA_HOME
-ENV JAVA_HOME /usr/lib/jvm/java
+ENV JAVA_HOME /etc/alternatives/java
 
 # Standard SSH port
 EXPOSE 22
