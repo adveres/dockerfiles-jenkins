@@ -3,7 +3,7 @@
 #   * https://wiki.jenkins-ci.org/display/JENKINS/Docker+Plugin and Dockerfile
 #   * https://hub.docker.com/r/evarga/jenkins-slave/
 #   * https://hub.docker.com/r/stefanlehmann/centos-jenkins-docker-slave/
-FROM centos:latest
+FROM centos:7
 
 # Install a basic SSH server GIT, UNZIP, LSOF, JDK8-devel
 RUN yum -y update \
