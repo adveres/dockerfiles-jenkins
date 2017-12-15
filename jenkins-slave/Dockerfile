@@ -7,7 +7,7 @@ FROM centos:7
 
 # Install a basic SSH server GIT, UNZIP, LSOF, JDK8-devel
 RUN yum -y update \
-    && yum -y install openssh-server git svn unzip zip lsof wget which java-1.8.0-openjdk-devel.x86_64 \
+    && yum -y install openssh-server openssh-client git svn unzip zip lsof wget which java-1.8.0-openjdk-devel.x86_64 \
     && yum -y clean all
 
 # update sshd settings, create jenkins user, set jenkins user pw, generate ssh keys
