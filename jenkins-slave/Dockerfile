@@ -5,9 +5,23 @@
 #   * https://hub.docker.com/r/stefanlehmann/centos-jenkins-docker-slave/
 FROM centos:7
 
+ENV COMPOSE_VERSION 1.17.0
+ENV DOCKER_VERSION 17.09.1.ce-1.el7.centos
+ENV MVN_VERSION=3.3.9
+
+# Install docker: https://docs.docker.com/engine/installation/linux/docker-ce/centos/
+RUN yum -y update \
+    && yum -y install yum-utils device-mapper-persistent-data lvm2 \
+    && yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+# Install docker compose: https://docs.docker.com/compose/install/#install-compose
+RUN curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose \
+    && chmod +x /usr/local/bin/docker-compose
+
 # Install a basic SSH server GIT, UNZIP, LSOF, JDK8-devel
 RUN yum -y update \
-    && yum -y install openssh-server openssh-client git svn unzip zip lsof wget which java-1.8.0-openjdk-devel.x86_64 \
+    && yum -y install openssh-server openssh-clients git svn unzip zip lsof wget which java-1.8.0-openjdk-devel.x86_64 \
+              docker-ce-${DOCKER_VERSION} \
     && yum -y clean all
 
 # update sshd settings, create jenkins user, set jenkins user pw, generate ssh keys
@@ -18,7 +32,6 @@ RUN sed -i 's|session    required     pam_loginuid.so|session    optional     pa
     && /usr/bin/ssh-keygen -A
 
 # Install maven
-ENV MVN_VERSION=3.3.9
 RUN wget -q http://www.eu.apache.org/dist/maven/maven-3/${MVN_VERSION}/binaries/apache-maven-${MVN_VERSION}-bin.tar.gz \
     && tar xzf apache-maven-${MVN_VERSION}-bin.tar.gz \
     && mkdir /usr/local/maven \
@@ -32,8 +45,3 @@ RUN mkdir /home/jenkins/.m2 \
 
 # Set JAVA_HOME
 ENV JAVA_HOME /etc/alternatives/java_sdk
-
-# Standard SSH port
-EXPOSE 22
-
-CMD ["/usr/sbin/sshd", "-D"]
